@@ -1,36 +1,44 @@
 import { useState } from 'react';
 import './App.css';
 import Board from './components/Board';
+import QuestionCard from './components/QuestionCard';
 import questionsData from './questions.json';
 
 function App() {
+    const [usedCards, setUsedCards] = useState(new Set());
     const [activeCard, setActiveCard] = useState(null);
 
     function handleSelectCard(categoryIndex, questionIndex, value) {
-        const { question, answer } = questionsData.categories[categoryIndex].questions[questionIndex];
+        const { question, answer } =
+            questionsData.categories[categoryIndex].questions[questionIndex];
         setActiveCard({ categoryIndex, questionIndex, value, question, answer });
+    }
+
+    function handleBackToBoard() {
+        setActiveCard(null);
+    }
+
+    function handleResult() {
+        const cardKey = `${activeCard.categoryIndex}-${activeCard.questionIndex}`;
+        const newUsed = new Set(usedCards);
+        newUsed.add(cardKey);
+        setUsedCards(newUsed);
+        setActiveCard(null);
     }
 
     return (
         <div className="game-screen">
             <h1 className="game-title">🎯 Jeopardy</h1>
-            <Board onSelectCard={handleSelectCard} />
+            <Board usedCards={usedCards} onSelectCard={handleSelectCard} />
 
             {activeCard && (
-                <div className="question-overlay">
-                    <div className="question-card">
-                        <div className="question-value">${activeCard.value}</div>
-                        <div className="question-text">{activeCard.question}</div>
-                        <div className="question-actions">
-                            <button
-                                className="btn btn--secondary"
-                                onClick={() => setActiveCard(null)}
-                            >
-                                ← Tilbake til brettet
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <QuestionCard
+                    question={activeCard.question}
+                    answer={activeCard.answer}
+                    value={activeCard.value}
+                    onResult={handleResult}
+                    onBack={handleBackToBoard}
+                />
             )}
         </div>
     );
