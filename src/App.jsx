@@ -1,5 +1,4 @@
 import "./App.css";
-import questionsData from './questions.json';
 import Board from './components/Board';
 
 function App() {
