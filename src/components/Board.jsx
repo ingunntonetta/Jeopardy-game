@@ -1,6 +1,7 @@
 import questionsData from '../questions.json';
 
-function Board() {
+// Board mottar { onSelectCard } som prop
+function Board({ onSelectCard }) {
     const { categories } = questionsData;
 
     return (
@@ -12,6 +13,7 @@ function Board() {
                         <button
                             key={questionIndex}
                             className="board-cell board-cell--available"
+                            onClick={() => onSelectCard(categoryIndex, questionIndex, question.value)}
                         >
                             ${question.value}
                         </button>
